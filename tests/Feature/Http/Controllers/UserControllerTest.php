@@ -56,4 +56,17 @@ class UserControllerTest extends TestCase
         $response->assertSee($user->friend_code);
         $response->assertDontSee($other->email);
     }
+
+    /**
+     * @test
+     */
+    public function ユーザ生成時のバリデーション()
+    {
+        $response = $this->post(route('user.store'), ['password' => 'abcdefg']);
+        $response->assertInvalid([
+            'name' => '名前は、必ず指定してください。',
+            'email' => 'メールアドレスは、必ず指定してください。',
+            'password' => 'パスワードとパスワード確認が一致しません。'
+        ]);
+    }
 }
