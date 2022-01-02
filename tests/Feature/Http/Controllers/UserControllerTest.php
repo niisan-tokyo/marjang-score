@@ -60,6 +60,71 @@ class UserControllerTest extends TestCase
     /**
      * @test
      */
+    public function ユーザの編集画面()
+    {
+        // データを作成
+        $user = User::factory()->create();
+
+        // レスポンスを取得
+        $response = $this->get(route('user.edit', ['user' => $user->id]));
+
+        // レスポンスの確認
+        $response->assertSee($user->name);
+        $response->assertSee($user->email);
+        $response->assertSee($user->player_name);
+        $response->assertSee($user->friend_code);
+        $response->assertDontSee($user->password);
+    }
+
+    /**
+     * @test
+     */
+    public function ユーザの更新()
+    {
+        // データを作成
+        $user = User::factory()->create();
+        $new = User::factory()->make()->toArray();
+
+        // レスポンスを取得
+        $response = $this->put(route('user.update', ['user' => $user->id]), $new + [
+            'password' => 'abcdefghijk12AG',
+            'password_confirmation' => 'abcdefghijk12AG'
+        ]);
+
+        // レスポンスはリダイレクトになっている
+        $response->assertRedirect(route('user.show', ['user' => $user->id]));
+
+        // データの確認
+        $test = User::find($user->id);
+        $this->assertEquals($new['name'], $test->name);
+        $this->assertEquals($new['player_name'], $test->player_name);
+        $this->assertEquals($new['email'], $test->email);
+        $this->assertEquals($new['friend_code'], $test->friend_code);
+    }
+
+    /**
+     * @test
+     */
+    public function ユーザ更新時、パスワードを変えない場合はパスワードに変化なし()
+    {
+        // データを作成
+        $user = User::factory()->create();
+        $new = User::factory()->make()->toArray();
+
+        // レスポンスを取得
+        $response = $this->put(route('user.update', ['user' => $user->id]), $new);
+
+        // 正常に動作したことの確認
+        $response->assertRedirect(route('user.show', ['user' => $user->id]));
+
+        // データの確認
+        $test = User::find($user->id);
+        $this->assertEquals($user->password, $test->password);
+    }
+
+    /**
+     * @test
+     */
     public function ユーザ生成時のバリデーション()
     {
         $response = $this->post(route('user.store'), ['password' => 'abcdefg']);
