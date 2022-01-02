@@ -15,6 +15,28 @@ class UserControllerTest extends TestCase
     /**
      * @test
      */
+    public function ユーザ一覧()
+    {
+        //データ生成
+        $users = User::factory()->count(2)->create();
+
+        // リクエスト
+        $response = $this->get(route('user.index'));
+
+        // レスポンスの確認
+        $response->assertSee($users[0]->name);
+        $response->assertSee($users[0]->player_name);
+        $response->assertSee($users[0]->email);
+        $response->assertSee($users[0]->friend_code);
+        $response->assertSee($users[1]->name);
+        $response->assertSee($users[1]->player_name);
+        $response->assertSee($users[1]->email);
+        $response->assertSee($users[1]->friend_code);
+    }
+
+    /**
+     * @test
+     */
     public function ユーザを作成する()
     {
         // 適当な入力値を生成
