@@ -85,4 +85,25 @@ class SeasonControllerTest extends TestCase
         $response->assertSee($season->name);
         $response->assertSee('現在アクティブです');
     }
+
+    /**
+     * @test
+     */
+    public function シーズンをアクティブにする()
+    {
+        $active_season = Season::factory()->create(['active' => true]);
+        $non_active_season = Season::factory()->create(['active' => false]);
+
+        $response = $this->put(route('season.activate', ['season' => $non_active_season]));
+
+        $response->assertRedirect(route('season.index'));
+
+        // もともとアクティブだったシーズンはノンアクティブに
+        $test = Season::find($active_season->id);
+        $this->assertFalse($test->active);
+
+        // アクティブになる
+        $test = Season::find($non_active_season->id);
+        $this->assertTrue($test->active);
+    }
 }

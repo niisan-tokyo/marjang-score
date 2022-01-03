@@ -88,4 +88,16 @@ class SeasonController extends Controller
     {
         //
     }
+
+    /**
+     * activate season
+     *
+     * @param Season $season
+     * @return Response
+     */
+    public function activate(Season $season)
+    {
+        $season->activate();
+        return redirect(route('season.index'));
+    }
 }

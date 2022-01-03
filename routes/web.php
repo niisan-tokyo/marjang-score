@@ -22,3 +22,4 @@ Route::get('/', function () {
 
 Route::resource('user', UserController::class);
 Route::resource('season', SeasonController::class);
+Route::put('season/{season}/activate', SeasonController::class . '@activate')->name('season.activate');

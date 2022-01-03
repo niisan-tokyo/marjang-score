@@ -12,4 +12,25 @@ class Season extends Model
     protected $fillable = [
         'name',
     ];
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'active' => 'boolean',
+    ];
+
+    /**
+     * シーズンをアクティブにする
+     *
+     * @return boolean
+     */
+    public function activate(): bool
+    {
+        self::query()->update(['active' => false]);
+        $this->active = true;
+        return $this->save();
+    }
 }

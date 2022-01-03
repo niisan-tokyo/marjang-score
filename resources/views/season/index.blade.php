@@ -14,7 +14,12 @@
     </tr>
     @foreach($seasons as $season)
     <tr>
-        <td>@if($season->active)☆彡@endif</td>
+        <td>@if($season->active)☆彡@else
+            <form method="POST" action="{{ route('season.activate', ['season' => $season]) }}">
+                @csrf @method('PUT')
+                <button type="submit">アクティブにする</button>
+            </form>
+        @endif</td>
         <td>{{ $season->id }}</td>
         <td>@if($season->active)☆彡@endif{{ $season->name }}</td>
         <td><a href="{{ route('season.show', ['season' => $season->id]) }}"><button>詳細</button></a></td>
