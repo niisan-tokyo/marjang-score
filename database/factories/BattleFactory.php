@@ -4,7 +4,7 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class SeasonFactory extends Factory
+class BattleFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -14,13 +14,7 @@ class SeasonFactory extends Factory
     public function definition()
     {
         return [
-            'name' => $this->faker->name(),
-            'active' => false
+            //
         ];
-    }
-
-    public function active()
-    {
-        return $this->state(fn() => ['active' => true]);
     }
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BattleController;
 use App\Http\Controllers\SeasonController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -23,3 +24,4 @@ Route::get('/', function () {
 Route::resource('user', UserController::class);
 Route::resource('season', SeasonController::class);
 Route::put('season/{season}/activate', SeasonController::class . '@activate')->name('season.activate');
+Route::resource('battle', BattleController::class);

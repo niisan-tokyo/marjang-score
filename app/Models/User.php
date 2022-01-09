@@ -50,4 +50,9 @@ class User extends Authenticatable
     {
         $this->attributes['password'] = Hash::make($password);
     }
+
+    public function battles()
+    {
+        return $this->belongsToMany(Battle::class)->using(BattleUser::class);
+    }
 }
