@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Http\Controllers;
 
+use App\Models\Battle;
 use App\Models\Season;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -94,5 +95,67 @@ class BattleControllerTest extends TestCase
         $this->assertEquals(3, $users[3]->pivot->start_position);
         $this->assertEquals(70, $users[3]->pivot->rank_point);
         $this->assertEquals(27000, $users[3]->pivot->score);
+    }
+
+    /**
+     * @test
+     */
+    public function 一覧でランキングを見る()
+    {
+        $battle = (new Battle);
+        $this->season->battles()->save($battle);
+        $battle->users()->sync([
+            $this->users[0]->id => [
+                'score' => 23000,// 23000 - 30000 - 10000 = -17000
+                'start_position' => 0,
+                'rank_point' => -170
+            ],
+            $this->users[1]->id => [
+                'score' => 34600,// 34600 - 30000 + 50000 = 54600
+                'start_position' => 1,
+                'rank_point' => 546
+            ],
+            $this->users[2]->id => [
+                'score' => 15400,// 15400 - 30000 - 30000 = -44600
+                'start_position' => 2,
+                'rank_point' => -446
+            ],
+            $this->users[3]->id => [
+                'score' => 27000,// 27000 - 30000 + 10000 = 7000
+                'start_position' => 3,
+                'rank_point' => 70
+            ],
+        ]);
+
+        $battle = (new Battle);
+        $this->season->battles()->save($battle);
+        $battle->users()->sync([
+            $this->users[0]->id => [
+                'score' => 45200,// 45200 - 30000 + 50000 = 65200
+                'start_position' => 0,
+                'rank_point' => 652
+            ],
+            $this->users[1]->id => [
+                'score' => 25600,// 25600 - 30000 - 10000 = 14400
+                'start_position' => 1,
+                'rank_point' => -144
+            ],
+            $this->users[2]->id => [
+                'score' => 31200,// 31200 - 30000 + 10000 = 11200
+                'start_position' => 2,
+                'rank_point' => 112
+            ],
+            $this->users[3]->id => [
+                'score' => -2000,// -2000 - 30000 - 30000 = -62000
+                'start_position' => 3,
+                'rank_point' => -620
+            ],
+        ]);
+
+        $response = $this->get(route('battle.index'));
+        $response->assertSee($this->users[0]->name . '<br>482', false);
+        $response->assertSee($this->users[1]->name . '<br>402', false);
+        $response->assertSee($this->users[2]->name . '<br>-334', false);
+        $response->assertSee($this->users[3]->name . '<br>-550', false);
     }
 }

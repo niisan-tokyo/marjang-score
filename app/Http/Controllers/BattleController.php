@@ -12,6 +12,22 @@ use Illuminate\Support\Facades\DB;
 
 class BattleController extends Controller
 {
+
+    public function index(Request $request)
+    {
+        $season = ($request->season_id) ? Season::findOrFail($request->season_id) : Season::active()->firstOrFail();
+        $season->load('battles.users');
+        $users = collect($season->battles->reduce(function($carry, $item) {
+            foreach ($item->users as $user) {
+                $carry[$user->id] ??= $user;
+                $carry[$user->id]->sum ??= 0;
+                $carry[$user->id]->sum += $user->pivot->rank_point; 
+            }
+            return $carry;
+        }))->sortBy([['sum', 'desc']]);
+
+        return view('battle.index', compact('season', 'users'));
+    }
     
     public function create(Request $request)
     {
