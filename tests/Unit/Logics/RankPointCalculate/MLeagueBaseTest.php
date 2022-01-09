@@ -104,9 +104,29 @@ class MLeagueBaseTest extends TestCase
 
         $result = $this->obj->run(collect($data))->keyBy('user');
 
-        $this->assertEquals(188, $result[2]['rank_point']);// 32000 - 30000 + 16800 = 18800
-        $this->assertEquals(186, $result[4]['rank_point']);// 32000 - 30000 + 16600 = 18600
-        $this->assertEquals(186, $result[1]['rank_point']);// 32000 - 30000 + 16600 = 18600
-        $this->assertEquals(-560, $result[3]['rank_point']);// 4000 - 30000 - 30000 = -56000
+        $this->assertEquals(188, $result[1]['rank_point']);// 32000 - 30000 + 16800 = 18800
+        $this->assertEquals(186, $result[2]['rank_point']);// 32000 - 30000 + 16600 = 18600
+        $this->assertEquals(186, $result[3]['rank_point']);// 32000 - 30000 + 16600 = 18600
+        $this->assertEquals(-560, $result[4]['rank_point']);// 4000 - 30000 - 30000 = -56000
+    }
+
+    /**
+     * @test
+     */
+    public function ２，３，４位が同点()
+    {
+        $data = [
+            0 => ['start_position' => 0, 'score' => 12300, 'user' => 1],
+            1 => ['start_position' => 1, 'score' => 12300, 'user' => 2],
+            2 => ['start_position' => 2, 'score' => 12300, 'user' => 3],
+            3 => ['start_position' => 3, 'score' => 63100, 'user' => 4]
+        ];
+
+        $result = $this->obj->run(collect($data))->keyBy('user');
+
+        $this->assertEquals(-277, $result[1]['rank_point']);// 12300 - 30000 - 10000 = -27700
+        $this->assertEquals(-277, $result[2]['rank_point']);// 12300 - 30000 - 10000 = -27700
+        $this->assertEquals(-277, $result[3]['rank_point']);// 12300 - 30000 - 10000 = -27700
+        $this->assertEquals(831, $result[4]['rank_point']);//63100 - 30000 + 50000 = -83100
     }
 }

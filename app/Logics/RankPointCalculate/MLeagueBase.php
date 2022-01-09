@@ -15,7 +15,7 @@ class MLeagueBase implements CalculateInterface
         $zero_point = config('rank_point.m_league_base.zero_point');
         $order_point = config('rank_point.m_league_base.order_point');
 
-        $sorted = $data->sortBy([['score', 'desc']]);
+        $sorted = $data->sortBy([['score', 'desc'], ['start_position', 'asc']]);
         $score = null;
         $order = 1;
         foreach ($sorted as $val) {
@@ -42,10 +42,13 @@ class MLeagueBase implements CalculateInterface
         if (empty($this->order_points)) {
             return;
         }
-        $average_order_point = array_sum($this->order_points) / count($this->order_points);
+        $sum = array_sum($this->order_points);
+        $modulo = (($sum / 100) % count($this->order_points)) * 100;
+        $average_order_point = ($sum - $modulo) / count($this->order_points);
         foreach ($this->temp_data as $data) {
             $this->pointed[$data['user']] = $data;
-            $this->pointed[$data['user']]['rank_point'] = ($data['score'] - $zero_point + $average_order_point) / 100;
+            $this->pointed[$data['user']]['rank_point'] = ($data['score'] - $zero_point + $average_order_point + $modulo) / 100;
+            $modulo = 0;
         }
 
         $this->order_points = [];
