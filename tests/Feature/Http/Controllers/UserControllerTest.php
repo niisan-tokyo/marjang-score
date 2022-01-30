@@ -95,7 +95,6 @@ class UserControllerTest extends TestCase
         $response->assertSee($user->email);
         $response->assertSee($user->player_name);
         $response->assertSee($user->friend_code);
-        $response->assertDontSee($user->password);
     }
 
     /**
@@ -108,10 +107,7 @@ class UserControllerTest extends TestCase
         $new = User::factory()->make()->toArray();
 
         // レスポンスを取得
-        $response = $this->put(route('user.update', ['user' => $user->id]), $new + [
-            'password' => 'abcdefghijk12AG',
-            'password_confirmation' => 'abcdefghijk12AG'
-        ]);
+        $response = $this->put(route('user.update', ['user' => $user->id]), $new);
 
         // レスポンスはリダイレクトになっている
         $response->assertRedirect(route('user.show', ['user' => $user->id]));
@@ -124,36 +120,16 @@ class UserControllerTest extends TestCase
         $this->assertEquals($new['friend_code'], $test->friend_code);
     }
 
-    /**
-     * @test
-     */
-    public function ユーザ更新時、パスワードを変えない場合はパスワードに変化なし()
-    {
-        // データを作成
-        $user = User::factory()->create();
-        $new = User::factory()->make()->toArray();
-
-        // レスポンスを取得
-        $response = $this->put(route('user.update', ['user' => $user->id]), $new);
-
-        // 正常に動作したことの確認
-        $response->assertRedirect(route('user.show', ['user' => $user->id]));
-
-        // データの確認
-        $test = User::find($user->id);
-        $this->assertEquals($user->password, $test->password);
-    }
 
     /**
      * @test
      */
     public function ユーザ生成時のバリデーション()
     {
-        $response = $this->post(route('user.store'), ['password' => 'abcdefg']);
+        $response = $this->post(route('user.store'), []);
         $response->assertInvalid([
             'name' => '名前は、必ず指定してください。',
             'email' => 'メールアドレスは、必ず指定してください。',
-            'password' => 'パスワードとパスワード確認が一致しません。'
         ]);
     }
 }

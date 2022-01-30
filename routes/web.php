@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\BattleController;
+use App\Http\Controllers\LoginController;
 use App\Http\Controllers\SeasonController;
 use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,9 +20,15 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     //return view('welcome');
-    return 'hello world!';
+    return redirect((Auth::guest()) ? route('login-index'): route('home'));
 });
 
+Route::get('/login', fn() => view('login.index'))->name('login-index');
+Route::post('/login/publish', LoginController::class . '@publishHash')->name('login-publish');
+Route::get('/login/published', fn() => view('login.published'))->name('login-published');
+Route::get('login/check/{hash}', LoginController::class . '@hashCheck')->name('login-check');
+
+Route::get('/home', fn() => view('home'))->name('home');
 Route::resource('user', UserController::class);
 Route::resource('season', SeasonController::class);
 Route::put('season/{season}/activate', SeasonController::class . '@activate')->name('season.activate');

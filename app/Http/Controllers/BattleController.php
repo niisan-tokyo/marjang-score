@@ -41,10 +41,33 @@ class BattleController extends Controller
     public function store(StoreBattleRequest $request)
     {
         $data = $request->validated();
+        $this->saveBattle(new Battle, $data);
+        return redirect(route('battle.index'));
+    }
+
+    public function edit(Battle $battle)
+    {
+        return view('battle.edit', [
+            'users' => User::all(),
+            'season' => $battle->season,
+            'battle' => $battle
+        ]);
+    }
+
+    public function update(Battle $battle, StoreBattleRequest $request)
+    {
+        $data = $request->validated();
+        $this->saveBattle($battle, $data);
+        return redirect(route('battle.index'));
+    }
+
+    private function saveBattle(Battle $battle, array $data)
+    {
         $result = (new Calculate)->exec(collect($data['battle']));
-        DB::transaction(function() use ($data, $result) {
+        DB::transaction(function() use ($battle, $data, $result) {
             $season = Season::find($data['season']);
-            $battle = new Battle($data);
+            $battle->share_url = $data['share_url'];
+            $battle->comment = $data['comment'];
             $season->battles()->save($battle);
 
             // ユーザと点数計算の結果を入れる
@@ -54,6 +77,5 @@ class BattleController extends Controller
             
             $battle->users()->sync($sync);
         });
-        return redirect(route('season.index'));
     }
 }

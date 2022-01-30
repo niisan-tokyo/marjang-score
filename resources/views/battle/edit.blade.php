@@ -4,10 +4,10 @@
 
 <h3>{{ $season->name }}</h3>
 @section('content')
-<form action="{{ route('battle.store') }}" method="POST">
-  @csrf @method('POST')
+<form action="{{ route('battle.update', ['battle' => $battle->id]) }}" method="POST">
+  @csrf @method('PUT')
   <input type="hidden" name="season" value="{{ $season->id }}" />
-  <label>牌譜URL: <input name="share_url" type="text" /></label><br>
+  <label>牌譜URL: <input name="share_url" type="text" value="{{ $battle->share_url }}"/></label><br>
   <table border="solid">
       <tr>
           <th>起家</th>
@@ -19,14 +19,18 @@
     <tr>
         <td>{{ $kike[$i] }}<input type="hidden" name="battle[{{ $i }}][start_position]" value="{{ $i }}"</td>
         <td><select name="battle[{{ $i }}][user]">
-            @foreach($users as $user) <option value="{{ $user->id }}">{{ $user->player_name }}({{ $user->name }})</option>@endforeach
+            @foreach($users as $user) 
+                <option value="{{ $user->id }}" @if($user->id === $battle->users[$i]->id) selected @endif>
+                    {{ $user->player_name }}({{ $user->name }})
+                </option>
+            @endforeach
         </select></td>
-        <td><input type="number" name="battle[{{ $i }}][score]" value="25000"/></td>
+        <td><input type="number" name="battle[{{ $i }}][score]" value="{{ $battle->users[$i]->pivot->score }}"/></td>
     </tr>
   @endfor
   </table>
-  <label>コメント: <textarea name="comment" rows="7" cols="50"></textarea><br>
-  <button type="submit">作成</button>
+  <label>コメント: <textarea name="comment" rows="7" cols="50">{{ $battle->comment }}</textarea><br>
+  <button type="submit">更新</button>
   @if ($errors->any())
     <div class="alert alert-danger">
         <ul>

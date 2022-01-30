@@ -12,10 +12,11 @@
         <th>南</th>
         <th>西</th>
         <th>北</th>
+        <th>コメント</th>
     </tr>
     @foreach ($season->battles as $battle)
     <tr>
-        <td>{{ $battle->created_at }}</td>
+        <td><a href="{{ route('battle.edit', ['battle' => $battle->id]) }}">{{ $battle->created_at }}</a></td>
         <td>{{ $battle->share_url }}</td>
         @foreach ($battle->users as $user)
         <td>
@@ -24,6 +25,7 @@
             {{ $user->pivot->rank_point }}
         </td>
         @endforeach
+        <td>{{ $battle->comment }}</td>
     </tr>
     @endforeach
 </table>
@@ -35,10 +37,11 @@
         @foreach ($users as $key => $user)
             <th>{{ $user->name }}<br>{{ $user->sum }}</th>
         @endforeach
+        <th>コメント</th>
     </tr>
     @foreach ($season->battles as $battle)
     <tr>
-        <td>{{ $battle->created_at }}</td>
+        <td><a href="{{ route('battle.edit', ['battle' => $battle->id]) }}">{{ $battle->created_at }}</a></td>
         <td>{{ $battle->share_url }}</td>
         @foreach ($users as $user)
         <?php $temp = $battle->users->where('id', $user->id)->first() ?>
@@ -48,6 +51,7 @@
         <td>{{ $temp->pivot->rank_point }}</td>
         @endif
         @endforeach
+        <td>{{ $battle->comment }}</td>
     </tr>
     @endforeach
 </table>

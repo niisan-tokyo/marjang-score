@@ -19,8 +19,8 @@ class CreateUsersTable extends Migration
             $table->string('player_name', 100);
             $table->string('email', 256)->unique();
             $table->string('friend_code', 30)->nullable();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+            $table->string('login_hash', 256)->nullable();
+            $table->timestamp('hash_limit')->nullable();
             $table->boolean('is_admin')->default(false);
             $table->rememberToken();
             $table->timestamps();
