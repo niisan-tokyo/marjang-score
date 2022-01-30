@@ -12,6 +12,14 @@ class UserControllerTest extends TestCase
 
     use RefreshDatabase;
 
+    public function setUp(): void
+    {
+        parent::setUp();
+        /** @var User $user */
+        $user = User::factory()->create();
+        $this->actingAs($user);
+    }
+
     /**
      * @test
      */
@@ -49,7 +57,7 @@ class UserControllerTest extends TestCase
         ]);
 
         // 入力内容がちゃんと保存されていることを確認
-        $test = User::first();
+        $test = User::orderBy('id', 'desc')->first();
         $this->assertEquals($user['name'], $test->name);
         $this->assertEquals($user['player_name'], $test->player_name);
         $this->assertEquals($user['email'], $test->email);

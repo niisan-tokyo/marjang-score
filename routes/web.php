@@ -28,8 +28,10 @@ Route::post('/login/publish', LoginController::class . '@publishHash')->name('lo
 Route::get('/login/published', fn() => view('login.published'))->name('login-published');
 Route::get('login/check/{hash}', LoginController::class . '@hashCheck')->name('login-check');
 
-Route::get('/home', fn() => view('home'))->name('home');
-Route::resource('user', UserController::class);
-Route::resource('season', SeasonController::class);
-Route::put('season/{season}/activate', SeasonController::class . '@activate')->name('season.activate');
-Route::resource('battle', BattleController::class);
+Route::middleware('auth')->group(function () {
+    Route::get('/home', fn() => view('home'))->name('home');
+    Route::resource('user', UserController::class);
+    Route::resource('season', SeasonController::class);
+    Route::put('season/{season}/activate', SeasonController::class . '@activate')->name('season.activate');
+    Route::resource('battle', BattleController::class);
+});

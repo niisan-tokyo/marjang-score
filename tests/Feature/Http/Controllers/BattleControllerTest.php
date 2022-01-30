@@ -37,6 +37,10 @@ class BattleControllerTest extends TestCase
                 4 => -30000
             ]
         ]);
+
+        /** @var User $user */
+        $user = User::factory()->create();
+        $this->actingAs($user);
     }
 
     /**

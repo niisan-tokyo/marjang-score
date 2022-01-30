@@ -3,6 +3,7 @@
 namespace Tests\Feature\Http\Controllers;
 
 use App\Models\Season;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Str;
@@ -15,6 +16,14 @@ class SeasonControllerTest extends TestCase
 {
 
     use RefreshDatabase;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        /** @var User $user */
+        $user = User::factory()->create();
+        $this->actingAs($user);
+    }
 
     /**
      * @test
