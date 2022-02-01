@@ -38,7 +38,9 @@ class CreateFirstUser extends Command
      */
     public function handle()
     {
-        (new User($this->arguments()))->save();
+        $user = new User($this->arguments());
+        $user->is_admin = true;
+        $user->save();
         return 0;
     }
 }

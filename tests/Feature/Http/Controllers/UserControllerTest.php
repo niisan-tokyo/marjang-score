@@ -5,6 +5,7 @@ namespace Tests\Feature\Http\Controllers;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Auth;
 use Tests\TestCase;
 
 class UserControllerTest extends TestCase
@@ -17,6 +18,8 @@ class UserControllerTest extends TestCase
         parent::setUp();
         /** @var User $user */
         $user = User::factory()->create();
+        $user->is_admin = true;
+        $user->save();
         $this->actingAs($user);
     }
 

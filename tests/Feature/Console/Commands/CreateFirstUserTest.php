@@ -24,5 +24,6 @@ class CreateFirstUserTest extends TestCase
         $user = User::whereEmail($mail)->first();
         $this->assertEquals('someone', $user->name);
         $this->assertEquals('displayname', $user->player_name);
+        $this->assertEquals(true, $user->is_admin);
     }
 }

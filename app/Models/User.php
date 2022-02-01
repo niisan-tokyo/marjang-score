@@ -24,7 +24,7 @@ class User extends Authenticatable
         'email',
         'password',
         'player_name',
-        'friend_code'
+        'friend_code',
     ];
 
     /**
