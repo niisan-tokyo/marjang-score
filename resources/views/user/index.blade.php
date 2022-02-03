@@ -21,8 +21,8 @@
         <td>{{ $user->player_name }}</td>
         <td>{{ $user->email }}</td>
         <td>{{ $user->friend_code }}</td>
-        <td><a href="{{ route('user.show', ['user' => $user->id]) }}"><button>詳細</button></a></td>
-        <td><a href="{{ route('user.edit', ['user' => $user->id]) }}"><button>編集</button></a></td>
+        <td><a href="{{ route('user.show', ['user' => $user]) }}"><button>詳細</button></a></td>
+        <td><a href="{{ route('user.edit', ['user' => $user]) }}"><button>編集</button></a></td>
     </tr>
     @endforeach
 </table>
