@@ -8,6 +8,9 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Auth;
 use Tests\TestCase;
 
+/**
+ * @group user
+ */
 class UserControllerTest extends TestCase
 {
 
@@ -54,10 +57,7 @@ class UserControllerTest extends TestCase
         $user = User::factory()->make()->toArray();
 
         // 登録処理にリクエストを投げてユーザを生成
-        $response = $this->post(route('user.store'), $user + [
-            'password' => 'abcdefghijk12AG',
-            'password_confirmation' => 'abcdefghijk12AG'
-        ]);
+        $response = $this->post(route('user.store'), $user);
 
         // 入力内容がちゃんと保存されていることを確認
         $test = User::orderBy('id', 'desc')->first();
@@ -131,6 +131,59 @@ class UserControllerTest extends TestCase
         $this->assertEquals($new['friend_code'], $test->friend_code);
     }
 
+    /**
+     * @test
+     */
+    public function 管理者は管理者権限を付与できる()
+    {
+        // データを作成
+        $user = User::factory()->create();
+        /** @var User */
+        $new = User::factory()->make();
+        $new->is_admin = true;
+
+        // レスポンスを取得
+        $response = $this->put(route('user.update', ['user' => $user->id]), $new->toArray());
+
+        // レスポンスはリダイレクトになっている
+        $response->assertRedirect(route('user.show', ['user' => $user->id]));
+
+        // データの確認
+        $test = User::find($user->id);
+        $this->assertEquals($new['name'], $test->name);
+        $this->assertEquals($new['player_name'], $test->player_name);
+        $this->assertEquals($new['email'], $test->email);
+        $this->assertEquals($new['friend_code'], $test->friend_code);
+        $this->assertTrue($test->is_admin);
+    }
+
+    /**
+     * @test
+     */
+    public function 一般ユーザは自分の情報更新をすることができるが管理者権限は取得できない()
+    {
+        // データを作成
+        /** @var User */
+        $user = User::factory()->create();
+        $this->actingAs($user);
+        /** @var User */
+        $new = User::factory()->make();
+        $new->is_admin = true;
+
+        // レスポンスを取得
+        $response = $this->put(route('user.update', ['user' => $user->id]), $new->toArray());
+
+        // レスポンスはリダイレクトになっている
+        $response->assertRedirect(route('user.show', ['user' => $user->id]));
+
+        // データの確認
+        $test = User::find($user->id);
+        $this->assertEquals($new['name'], $test->name);
+        $this->assertEquals($new['player_name'], $test->player_name);
+        $this->assertEquals($new['email'], $test->email);
+        $this->assertEquals($new['friend_code'], $test->friend_code);
+        $this->assertFalse($test->is_admin);
+    }
 
     /**
      * @test

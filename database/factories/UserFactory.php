@@ -18,7 +18,8 @@ class UserFactory extends Factory
             'name' => $this->faker->name(),
             'email' => $this->faker->unique()->safeEmail(),
             'player_name' => $this->faker->name,
-            'friend_code' => mt_rand(100000000, 999999999)
+            'friend_code' => mt_rand(100000000, 999999999),
+            'is_admin' => false
         ];
     }
 

@@ -21,6 +21,14 @@
   @error('friend_code')
     <div class="alert alert-danger">{{ $message }}</div>
   @enderror
+  @if(Auth::user()->is_admin)
+    <label>管理者にする？
+      <select name="is_admin">
+        <option value="true" @if($user->is_admin)selected @endif>はい</option>
+        <option value="false" @if(!$user->is_admin)selected @endif>いいえ</option>
+      </select>
+    </label><br>
+  @endif
   <button type="submit">登録</button>
 </form>
 @endsection

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;  
 use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
@@ -38,7 +39,11 @@ class UserController extends Controller
     public function store(StoreUserRequest $request)
     {
         $user = new User;
-        $user->fill($request->validated())->save();
+        $user->fill($request->validated());
+        if (Auth::user()->is_admin) {
+            $user->is_admin = $request->is_admin;
+        }
+        $user->save();
         return redirect(route('user.show', ['user' => $user->id]));
     }
 
@@ -73,7 +78,11 @@ class UserController extends Controller
      */
     public function update(UpdateUserRequest $request, User $user)
     {
-        $user->fill($request->validated())->save();
+        $user->fill($request->validated());
+        if (Auth::user()->is_admin) {
+            $user->is_admin = $request->is_admin;
+        }
+        $user->save();
         return redirect(route('user.show', ['user' => $user->id]));
     }
 

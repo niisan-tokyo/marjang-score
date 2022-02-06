@@ -28,7 +28,8 @@ class UpdateUserRequest extends FormRequest
             'name' => 'required|max:50',
             'player_name' => 'nullable|max:256',
             'email' => 'required|max:256',
-            'friend_code' => 'nullable|max:30'
+            'friend_code' => 'nullable|max:30',
+            'is_admin' => 'nullable',
         ];
     }
 }
