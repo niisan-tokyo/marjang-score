@@ -24,11 +24,20 @@
   @if(Auth::user()->is_admin)
     <label>管理者にする？
       <select name="is_admin">
-        <option value="true" @if($user->is_admin)selected @endif>はい</option>
-        <option value="false" @if(!$user->is_admin)selected @endif>いいえ</option>
+        <option value="1" @if($user->is_admin)selected @endif>はい</option>
+        <option value="0" @if(!$user->is_admin)selected @endif>いいえ</option>
       </select>
     </label><br>
   @endif
   <button type="submit">登録</button>
 </form>
+@if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
 @endsection

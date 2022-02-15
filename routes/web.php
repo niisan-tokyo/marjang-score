@@ -24,9 +24,9 @@ Route::get('/', function () {
 });
 
 Route::get('/login', fn() => view('login.index'))->name('login-index');
-Route::post('/login/publish', LoginController::class . '@publishHash')->name('login-publish');
+Route::post('/login/publish', [LoginController::class, 'publishHash'])->name('login-publish');
 Route::get('/login/published', fn() => view('login.published'))->name('login-published');
-Route::get('login/check/{hash}', LoginController::class . '@hashCheck')->name('login-check');
+Route::get('login/check/{hash}', [LoginController::class, 'hashCheck'])->name('login-check');
 
 Route::middleware('auth')->group(function () {
     Route::get('/home', fn() => view('home'))->name('home');

@@ -3,6 +3,7 @@
 @section('title', '試合の記録')
 
 <h3>{{ $season->name }}</h3>
+<a href="{{ route('battle.create') }}"><button>試合を記録</button></a>
 @section('content')
 <table border="solid">
     <tr>

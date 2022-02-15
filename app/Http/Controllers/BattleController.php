@@ -74,7 +74,6 @@ class BattleController extends Controller
             $sync = $result->mapWithKeys(fn($item, $key) => [
                 $item['user'] => collect($item)->only(['score', 'start_position', 'rank_point'])->toArray()
             ])->toArray();
-            
             $battle->users()->sync($sync);
         });
     }

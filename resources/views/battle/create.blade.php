@@ -19,7 +19,11 @@
     <tr>
         <td>{{ $kike[$i] }}<input type="hidden" name="battle[{{ $i }}][start_position]" value="{{ $i }}"</td>
         <td><select name="battle[{{ $i }}][user]">
-            @foreach($users as $user) <option value="{{ $user->id }}">{{ $user->player_name }}({{ $user->name }})</option>@endforeach
+            @foreach($users as $user)
+                <option value="{{ $user->id }}">
+                    {{ $user->player_name }}({{ $user->name }})
+                </option>
+            @endforeach
         </select></td>
         <td><input type="number" name="battle[{{ $i }}][score]" value="25000"/></td>
     </tr>

@@ -24,8 +24,8 @@
   @if(Auth::user()->is_admin)
     <label>管理者にする？
       <select name="is_admin">
-        <option value="true">はい</option>
-        <option value="false">いいえ</option>
+        <option value="1">はい</option>
+        <option value="0">いいえ</option>
       </select>
     </label><br>
   @endif
