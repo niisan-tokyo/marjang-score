@@ -27,6 +27,7 @@ class StoreUserRequest extends FormRequest
             'name' => 'required|max:50',
             'player_name' => 'nullable|max:256',
             'email' => 'required|max:256',
+            'password' => 'nullable|confirmed|min:8|max:100',
             'friend_code' => 'nullable|max:30',
             'is_admin' => 'nullable|boolean',
         ];

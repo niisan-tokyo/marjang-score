@@ -90,4 +90,9 @@ class UserPolicy
     {
         //
     }
+
+    public function password(User $user, User $model)
+    {
+        return $model->id === null or $model->id === $user->id;
+    }
 }

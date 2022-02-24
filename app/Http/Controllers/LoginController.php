@@ -50,4 +50,10 @@ class LoginController extends Controller
         }
         return redirect(route('home'));
     }
+
+    public function password(Request $request)
+    {
+        Auth::attempt($request->all());
+        return redirect(route('home'));
+    }
 }

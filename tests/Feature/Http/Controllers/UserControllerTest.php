@@ -6,6 +6,10 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use Tests\TestCase;
 
 /**
@@ -13,6 +17,8 @@ use Tests\TestCase;
  */
 class UserControllerTest extends TestCase
 {
+
+    private User $loginUser;
 
     use RefreshDatabase;
 
@@ -23,6 +29,7 @@ class UserControllerTest extends TestCase
         $user = User::factory()->create();
         $user->is_admin = true;
         $user->save();
+        $this->loginUser = $user;
         $this->actingAs($user);
     }
 
@@ -57,7 +64,11 @@ class UserControllerTest extends TestCase
         $user = User::factory()->make()->toArray();
 
         // 登録処理にリクエストを投げてユーザを生成
-        $response = $this->post(route('user.store'), $user);
+        $password = Str::random(20);
+        $response = $this->post(route('user.store'), $user + [
+            'password' => $password,
+            'password_confirmation' => $password
+        ]);
 
         // 入力内容がちゃんと保存されていることを確認
         $test = User::orderBy('id', 'desc')->first();
@@ -65,6 +76,10 @@ class UserControllerTest extends TestCase
         $this->assertEquals($user['player_name'], $test->player_name);
         $this->assertEquals($user['email'], $test->email);
         $this->assertEquals($user['friend_code'], $test->friend_code);
+        $this->assertTrue(Auth::attempt([
+            'email' => $user['email'],
+            'password' => $password
+        ]));
 
         // レスポンスはリダイレクトになっている
         $response->assertRedirect(route('user.show', ['user' => $test->id]));
@@ -129,6 +144,33 @@ class UserControllerTest extends TestCase
         $this->assertEquals($new['player_name'], $test->player_name);
         $this->assertEquals($new['email'], $test->email);
         $this->assertEquals($new['friend_code'], $test->friend_code);
+    }
+
+    /**
+     * @test
+     */
+    public function 本人はパスワードを変更できる()
+    {
+        $new = User::factory()->make()->toArray();
+        $user = $this->loginUser;
+
+        // レスポンスを取得
+        $password = Str::random(20);
+        $response = $this->put(route('user.update', ['user' => $user->id]), $new + [
+            'password' => $password,
+            'password_confirmation' => $password
+        ]);
+
+        // レスポンスはリダイレクトになっている
+        $response->assertRedirect(route('user.show', ['user' => $user->id]));
+
+        // データの確認
+        $test = User::find($user->id);
+        $this->assertEquals($new['name'], $test->name);
+        $this->assertEquals($new['player_name'], $test->player_name);
+        $this->assertEquals($new['email'], $test->email);
+        $this->assertEquals($new['friend_code'], $test->friend_code);
+        $this->assertTrue(Hash::check($password, $test->password));
     }
 
     /**

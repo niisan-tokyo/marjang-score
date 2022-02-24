@@ -28,6 +28,9 @@ Route::post('/login/publish', [LoginController::class, 'publishHash'])->name('lo
 Route::get('/login/published', fn() => view('login.published'))->name('login-published');
 Route::get('login/check/{hash}', [LoginController::class, 'hashCheck'])->name('login-check');
 
+Route::get('/login/password', fn() => view('login.password'))->name('login-password');
+Route::post('/login/password', [LoginController::class, 'password'])->name('login-password-post');
+
 Route::middleware('auth')->group(function () {
     Route::get('/home', fn() => view('home'))->name('home');
     Route::resource('user', UserController::class);

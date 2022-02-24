@@ -22,7 +22,6 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
-        'password',
         'player_name',
         'friend_code',
     ];
@@ -39,5 +38,10 @@ class User extends Authenticatable
     public function battles()
     {
         return $this->belongsToMany(Battle::class)->using(BattleUser::class);
+    }
+
+    public function setPasswordAttribute(string $password)
+    {
+        $this->attributes['password'] = Hash::make($password);
     }
 }

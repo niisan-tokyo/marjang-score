@@ -40,6 +40,7 @@ class CreateFirstUser extends Command
     {
         $user = new User($this->arguments());
         $user->is_admin = true;
+        $user->password = '1qaz2wsx3edc';
         $user->save();
         return 0;
     }

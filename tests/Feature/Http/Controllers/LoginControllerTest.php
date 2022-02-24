@@ -55,4 +55,23 @@ class LoginControllerTest extends TestCase
         // ログインしている
         $this->assertFalse(Auth::guest());
     }
+
+    /**
+     * @test
+     */
+    public function パスワードでログインする()
+    {
+        $password = Str::random(20);
+        $this->user->password = $password;
+        $this->user->save();
+
+        $response = $this->post(route('login-password-post'), [
+            'email' => $this->user->email,
+            'password' => $password
+        ]);
+        
+        $response->assertRedirect(route('home'));
+        $this->assertFalse(Auth::guest());
+        $this->assertEquals($this->user->id, Auth::id());
+    }
 }

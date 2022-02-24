@@ -38,12 +38,7 @@ class UserController extends Controller
      */
     public function store(StoreUserRequest $request)
     {
-        $user = new User;
-        $user->fill($request->validated());
-        if (Auth::user()->is_admin) {
-            $user->is_admin = $request->is_admin;
-        }
-        $user->save();
+        $user = $this->saveUser(new User, $request->validated());
         return redirect(route('user.show', ['user' => $user->id]));
     }
 
@@ -78,11 +73,7 @@ class UserController extends Controller
      */
     public function update(UpdateUserRequest $request, User $user)
     {
-        $user->fill($request->validated());
-        if (Auth::user()->is_admin) {
-            $user->is_admin = $request->is_admin;
-        }
-        $user->save();
+        $this->saveUser($user, $request->validated());
         return redirect(route('user.show', ['user' => $user->id]));
     }
 
@@ -95,5 +86,20 @@ class UserController extends Controller
     public function destroy(User $user)
     {
         //
+    }
+
+    private function saveUser(User $user, array $validated): User
+    {
+        $user->fill($validated);
+        if (Auth::user()->is_admin and isset($validated['is_admin'])) {
+            $user->is_admin = $validated['is_admin'];
+        }
+
+        if (! empty($validated['password']) and $this->authorize('password', $user)) {
+            $user->password = $validated['password'];
+        }
+        $user->save();
+
+        return $user;
     }
 }
