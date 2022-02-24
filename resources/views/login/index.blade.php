@@ -6,6 +6,7 @@
     </head>
     <body>
         <div class="container">
+            <a href="{{ route('login-password') }}">普通のログインはこちら</a><br>
             <form action="{{ route('login-publish') }}" method="post">
                 @csrf
                 <label>メールアドレス<input type="text" name="email" /></label><br>
